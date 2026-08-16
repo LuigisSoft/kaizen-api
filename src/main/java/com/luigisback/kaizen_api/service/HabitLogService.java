@@ -21,6 +21,16 @@ public class HabitLogService {
 
     public List<HabitLog> getAllLogs(){return habitLogRepository.findAll();}
 
+    public List<HabitLog>getLogsByHabitId(Long habitId){
+        return habitLogRepository.findByHabitId(habitId);
+
+    }
+    public long countLogsByHabitId(Long habitId){
+        return habitLogRepository.countByHabitId(habitId);
+    }
+
+
+
     public HabitLog saveHabitLogs(HabitLog habitLog){return habitLogRepository.save(habitLog);}
 
     public HabitLog getHabitLogById(Long id){
