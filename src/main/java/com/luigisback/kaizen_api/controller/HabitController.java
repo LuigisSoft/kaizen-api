@@ -6,7 +6,6 @@ import com.luigisback.kaizen_api.service.HabitService;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 import com.luigisback.kaizen_api.service.HabitLogService;
-import com.luigisback.kaizen_api.entity.HabitLog;
 
 import java.util.List;
 
@@ -52,6 +51,7 @@ public class HabitController {
     public List<HabitLog> getLogsByHabitId(@PathVariable Long id){
         return habitLogService.getLogsByHabitId(id);
     }
+
     @GetMapping("/api/habits/{id}/count")
     public long countLogsByHabitId(@PathVariable Long id){
         return habitLogService.countLogsByHabitId(id);

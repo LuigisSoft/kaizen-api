@@ -1,6 +1,7 @@
 package com.luigisback.kaizen_api.service;
 
 import com.luigisback.kaizen_api.entity.Habit;
+import com.luigisback.kaizen_api.exception.HabitNotFoundException;
 import com.luigisback.kaizen_api.repository.HabitRepository;
 import org.springframework.stereotype.Service;
 
@@ -25,24 +26,23 @@ public class HabitService {
     }
 
     public Habit getHabitById(Long id) {
-        return habitRepository.findById(id).orElse(null);
+        return habitRepository.findById(id).orElseThrow(() ->new HabitNotFoundException("Hábito no encontrado"));
     }
 
     public void deleteHabit(Long id) {
-        habitRepository.deleteById(id);
+        Habit habit =habitRepository.findById(id).orElseThrow(()->new HabitNotFoundException("No encontrado"));
+        habitRepository.delete(habit);
     }
 
     public Habit updateHabit(Long id, Habit updatedHabit) {
 
-        Habit habit = habitRepository.findById(id).orElse(null);
+        Habit habit = habitRepository.findById(id).orElseThrow(()-> new HabitNotFoundException("Hábito no encontrado"));
 
-        if (habit != null) {
             habit.setName(updatedHabit.getName());
             habit.setDescription(updatedHabit.getDescription());
 
             return habitRepository.save(habit);
-        }
 
-        return null;
+
     }
 }
