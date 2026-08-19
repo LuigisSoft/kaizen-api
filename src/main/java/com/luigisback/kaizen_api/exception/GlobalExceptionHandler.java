@@ -6,12 +6,20 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
-public class GlobalExceptionHandler {
+public class GlobalExceptionHandler{
 
     @ExceptionHandler(HabitNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public String handleHabitNotFound(HabitNotFoundException ex) {
+    public  String handleHabitNotFound(HabitNotFoundException ex) {
         return ex.getMessage();
     }
+
+    @ExceptionHandler(HabitLogAlreadyExistsException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public String handleHabitLogAlreadyExistsException
+
+
+
+
 }
-//reescribir código
+

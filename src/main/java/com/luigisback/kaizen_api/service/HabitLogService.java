@@ -5,9 +5,8 @@ import com.luigisback.kaizen_api.entity.Habit;
 import com.luigisback.kaizen_api.entity.HabitLog;
 import com.luigisback.kaizen_api.repository.HabitLogRepository;
 import org.springframework.stereotype.Service;
-
+import com.luigisback.kaizen_api.exception.HabitLogAlreadyExistsException;
 import java.util.List;
-
 import static org.springframework.data.jpa.domain.AbstractPersistable_.id;
 
 @Service
@@ -31,7 +30,18 @@ public class HabitLogService {
 
 
 
-    public HabitLog saveHabitLogs(HabitLog habitLog){return habitLogRepository.save(habitLog);}
+    public HabitLog saveHabitLogs(HabitLog habitLog){
+
+        if(habitLogRepository.existsByHabitIdAndDate(
+                habitLog.getHabit().getId(),
+                habitLog.getDate())){
+
+            throw new HabitLogAlreadyExistsException("El hábito ya esta registrado para este día");
+
+        }
+
+
+        return habitLogRepository.save(habitLog);}
 
     public HabitLog getHabitLogById(Long id){
         return habitLogRepository.findById(id).orElse(null);    }
