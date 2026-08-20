@@ -4,6 +4,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler{
@@ -16,7 +17,18 @@ public class GlobalExceptionHandler{
 
     @ExceptionHandler(HabitLogAlreadyExistsException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
-    public String handleHabitLogAlreadyExistsException
+    public String handleHabitLogAlreadyExist(HabitLogAlreadyExistsException ex){
+        return ex.getMessage();
+    }
+    //cambiar este método a mano
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public String handleValidationException(MethodArgumentNotValidException ex) {
+        return ex.getBindingResult()
+                .getFieldErrors()
+                .get(0)
+                .getDefaultMessage();
+    }
 
 
 

@@ -2,6 +2,7 @@ package com.luigisback.kaizen_api.entity;
 
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import org.hibernate.annotations.AnyDiscriminatorImplicitValues;
 import org.hibernate.annotations.ManyToAny;
 
@@ -14,10 +15,12 @@ public class HabitLog {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+
+    @NotNull
     private LocalDate date;
 
 
-
+    @NotNull
     @ManyToOne
     private Habit habit;
 
