@@ -57,6 +57,11 @@ public class HabitController {
         return habitLogService.countLogsByHabitId(id);
     }
 
+    @GetMapping("/api/habits/{id}/streak")
+    public long getCurrentStreak(@PathVariable Long id) {
+        return habitLogService.getCurrentStreak(id);
+    }
+
 
 
 

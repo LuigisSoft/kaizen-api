@@ -7,10 +7,13 @@ import java.time.LocalDate;
 import java.util.List;
 
 public interface HabitLogRepository extends JpaRepository<HabitLog, Long> {
-    List<HabitLog> findByHabitId(Long habitId);
+    List<HabitLog> findByHabitIdOrderByDateDesc(Long habitId);
 
      Long countByHabitId(Long habitId);
+     Long countByDate(LocalDate date);
 
      boolean existsByHabitIdAndDate(Long habitId, LocalDate date);
+
+
 
 }
