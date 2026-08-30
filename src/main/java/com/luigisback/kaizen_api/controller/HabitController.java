@@ -2,6 +2,8 @@ package com.luigisback.kaizen_api.controller;
 
 import com.luigisback.kaizen_api.entity.Habit;
 import com.luigisback.kaizen_api.entity.HabitLog;
+import com.luigisback.kaizen_api.entity.dto.HabitRequestDTO;
+import com.luigisback.kaizen_api.entity.dto.HabitResponseDTO;
 import com.luigisback.kaizen_api.service.HabitService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -23,13 +25,15 @@ public class HabitController {
     }
 
     @GetMapping("api/habits")
-    public List<Habit> getAllHabit(){
+    public List<HabitResponseDTO> getAllHabit(){
 
         return habitService.getAllHabits();
+
     }
 
     @PostMapping("/api/habits")
-    public ResponseEntity<Habit> createHabit(@Valid @RequestBody Habit habit){
+    public ResponseEntity<HabitResponseDTO> createHabit(
+            @Valid @RequestBody HabitRequestDTO habit) {
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
@@ -37,7 +41,7 @@ public class HabitController {
     }
 
     @GetMapping("/api/habits/{id}")
-    public Habit getHabitlById(@PathVariable Long id){
+    public HabitResponseDTO getHabitlById(@PathVariable Long id){
         return habitService.getHabitById(id);
 
     }
@@ -51,8 +55,10 @@ public class HabitController {
     }
 
     @PutMapping("/api/habits/{id}")
-    public Habit updateHabits(@PathVariable Long id,
-                           @RequestBody Habit habit){
+    public HabitResponseDTO updateHabits(
+            @PathVariable Long id,
+            @Valid @RequestBody HabitRequestDTO habit) {
+
         return habitService.updateHabit(id, habit);
     }
     @GetMapping("/api/habits/{id}/logs")
