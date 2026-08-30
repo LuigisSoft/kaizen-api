@@ -4,6 +4,8 @@ import com.luigisback.kaizen_api.entity.Habit;
 import com.luigisback.kaizen_api.entity.HabitLog;
 import com.luigisback.kaizen_api.service.HabitLogService;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,8 +26,10 @@ public class HabitLogController {
     }
 
     @PostMapping("/api/habitLogs")
-    public HabitLog createHabitLog(@Valid @RequestBody HabitLog habitLog) {
-        return habitLogService.saveHabitLogs(habitLog);
+    public ResponseEntity<HabitLog> createHabitLog(@Valid @RequestBody HabitLog habitLog) {
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(habitLogService.saveHabitLogs(habitLog));
     }
 
     @GetMapping("/api/habitLogs/{id}")
@@ -34,8 +38,9 @@ public class HabitLogController {
     }
 
     @DeleteMapping("/api/habitLogs/{id}")
-    public void deleteHabitLogs(@PathVariable Long id){
+    public   ResponseEntity<Void> deleteHabitLogs(@PathVariable Long id){
         habitLogService.deleteHabitLog(id);
+        return ResponseEntity.noContent().build();
     }
 
 
