@@ -7,6 +7,8 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import com.luigisback.kaizen_api.entity.dto.HabitLogRequestDTO;
+import com.luigisback.kaizen_api.entity.dto.HabitLogResponseDTO;
 
 import java.util.List;
 
@@ -21,19 +23,20 @@ public class HabitLogController {
 
 
     @GetMapping("api/habitLogs")
-    public List<HabitLog> getAllLogs(){
+    public List<HabitLogResponseDTO> getAllLogs(){
         return habitLogService.getAllLogs();
     }
 
     @PostMapping("/api/habitLogs")
-    public ResponseEntity<HabitLog> createHabitLog(@Valid @RequestBody HabitLog habitLog) {
+    public ResponseEntity<HabitLogResponseDTO> createHabitLog
+            (@Valid @RequestBody HabitLogRequestDTO habitLog) {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(habitLogService.saveHabitLogs(habitLog));
     }
 
     @GetMapping("/api/habitLogs/{id}")
-    public HabitLog getHabitLogById(@PathVariable Long id){
+    public HabitLogResponseDTO  getHabitLogById(@PathVariable Long id){
         return habitLogService.getHabitLogById(id);
     }
 

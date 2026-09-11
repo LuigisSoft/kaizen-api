@@ -1,7 +1,7 @@
 package com.luigisback.kaizen_api.controller;
 
-import com.luigisback.kaizen_api.entity.Habit;
 import com.luigisback.kaizen_api.entity.HabitLog;
+import com.luigisback.kaizen_api.entity.dto.HabitLogResponseDTO;
 import com.luigisback.kaizen_api.entity.dto.HabitRequestDTO;
 import com.luigisback.kaizen_api.entity.dto.HabitResponseDTO;
 import com.luigisback.kaizen_api.service.HabitService;
@@ -20,15 +20,13 @@ public class HabitController {
     public final HabitLogService habitLogService;
 
     public HabitController(HabitService habitService, HabitLogService habitLogService) {
-        this.habitService=habitService;
-        this.habitLogService=habitLogService;
+        this.habitService = habitService;
+        this.habitLogService = habitLogService;
     }
 
     @GetMapping("api/habits")
-    public List<HabitResponseDTO> getAllHabit(){
-
+    public List<HabitResponseDTO> getAllHabit() {
         return habitService.getAllHabits();
-
     }
 
     @PostMapping("/api/habits")
@@ -41,9 +39,8 @@ public class HabitController {
     }
 
     @GetMapping("/api/habits/{id}")
-    public HabitResponseDTO getHabitlById(@PathVariable Long id){
+    public HabitResponseDTO getHabitById(@PathVariable Long id) {
         return habitService.getHabitById(id);
-
     }
 
     @DeleteMapping("/api/habits/{id}")
@@ -61,13 +58,14 @@ public class HabitController {
 
         return habitService.updateHabit(id, habit);
     }
+
     @GetMapping("/api/habits/{id}/logs")
-    public List<HabitLog> getLogsByHabitId(@PathVariable Long id){
+    public List<HabitLogResponseDTO> getLogsByHabitId(@PathVariable Long id){
         return habitLogService.getLogsByHabitId(id);
     }
 
     @GetMapping("/api/habits/{id}/count")
-    public long countLogsByHabitId(@PathVariable Long id){
+    public long countLogsByHabitId(@PathVariable Long id) {
         return habitLogService.countLogsByHabitId(id);
     }
 
@@ -75,8 +73,4 @@ public class HabitController {
     public long getCurrentStreak(@PathVariable Long id) {
         return habitLogService.getCurrentStreak(id);
     }
-
-
-
-
 }

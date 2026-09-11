@@ -7,6 +7,7 @@ import com.luigisback.kaizen_api.exception.HabitNotFoundException;
 import com.luigisback.kaizen_api.repository.HabitRepository;
 import org.springframework.stereotype.Service;
 
+
 import java.util.List;
 
 @Service
@@ -14,12 +15,12 @@ public class HabitService {
 
     private final HabitRepository habitRepository;
 
-    public HabitService(HabitRepository habitRepository){
-        this.habitRepository=habitRepository;
-
+    public HabitService(HabitRepository habitRepository) {
+        this.habitRepository = habitRepository;
     }
 
-    public List<HabitResponseDTO> getAllHabits(){
+    public List<HabitResponseDTO> getAllHabits() {
+
         return habitRepository.findAll()
                 .stream()
                 .map(habit -> new HabitResponseDTO(
@@ -28,7 +29,8 @@ public class HabitService {
                         habit.getDescription(),
                         habit.getFrequency()
                 ))
-                .toList();    }
+                .toList();
+    }
 
     public HabitResponseDTO saveHabit(HabitRequestDTO habitDTO) {
 
@@ -49,6 +51,7 @@ public class HabitService {
     }
 
     public HabitResponseDTO getHabitById(Long id) {
+
         return habitRepository.findById(id)
                 .map(habit -> new HabitResponseDTO(
                         habit.getId(),
@@ -61,11 +64,17 @@ public class HabitService {
     }
 
     public void deleteHabit(Long id) {
-        Habit habit =habitRepository.findById(id).orElseThrow(()->new HabitNotFoundException("No encontrado"));
+
+        Habit habit = habitRepository.findById(id)
+                .orElseThrow(() ->
+                        new HabitNotFoundException("No encontrado"));
+
         habitRepository.delete(habit);
     }
 
-    public HabitResponseDTO updateHabit(Long id, HabitRequestDTO updatedHabit) {
+    public HabitResponseDTO updateHabit(
+            Long id,
+            HabitRequestDTO updatedHabit) {
 
         Habit habit = habitRepository.findById(id)
                 .orElseThrow(() ->

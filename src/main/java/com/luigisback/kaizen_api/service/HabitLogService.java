@@ -1,17 +1,17 @@
 package com.luigisback.kaizen_api.service;
 
-
 import com.luigisback.kaizen_api.entity.Habit;
 import com.luigisback.kaizen_api.entity.HabitLog;
+import com.luigisback.kaizen_api.entity.dto.HabitLogRequestDTO;
+import com.luigisback.kaizen_api.entity.dto.HabitLogResponseDTO;
+import com.luigisback.kaizen_api.exception.HabitLogAlreadyExistsException;
 import com.luigisback.kaizen_api.exception.HabitNotFoundException;
 import com.luigisback.kaizen_api.repository.HabitLogRepository;
 import com.luigisback.kaizen_api.repository.HabitRepository;
 import org.springframework.stereotype.Service;
-import com.luigisback.kaizen_api.exception.HabitLogAlreadyExistsException;
 
 import java.time.LocalDate;
 import java.util.List;
-import static org.springframework.data.jpa.domain.AbstractPersistable_.id;
 
 @Service
 public class HabitLogService {
@@ -25,49 +25,95 @@ public class HabitLogService {
         this.habitRepository = habitRepository;
     }
 
-    public List<HabitLog> getAllLogs(){return habitLogRepository.findAll();}
+    public HabitLogResponseDTO saveHabitLogs(HabitLogRequestDTO habitLogDTO) {
 
-    public List<HabitLog>getLogsByHabitId(Long habitId){
-        return habitLogRepository.findByHabitIdOrderByDateDesc(habitId);
+        Habit habit = habitRepository.findById(habitLogDTO.getHabitId())
+                .orElseThrow(() ->
+                        new HabitNotFoundException("Hábito no encontrado"));
+
+        if (habitLogRepository.existsByHabitIdAndDate(
+                habitLogDTO.getHabitId(),
+                habitLogDTO.getDate())) {
+
+            throw new HabitLogAlreadyExistsException(
+                    "El hábito ya esta registrado para este día");
+        }
+
+        HabitLog habitLog = new HabitLog();
+
+        habitLog.setDate(habitLogDTO.getDate());
+        habitLog.setHabit(habit);
+
+        HabitLog savedHabitLog = habitLogRepository.save(habitLog);
+
+        return new HabitLogResponseDTO(
+                savedHabitLog.getId(),
+                savedHabitLog.getDate(),
+                savedHabitLog.getHabit().getId()
+        );
+    }
+
+    public List<HabitLogResponseDTO> getAllLogs() {
+        return habitLogRepository.findAll()
+                .stream()
+                .map(habitLog -> new HabitLogResponseDTO(
+                    habitLog.getId(),
+                        habitLog.getDate(),
+                        habitLog.getHabit().getId()
+                ))
+                .toList();
+    }
+
+    public List<HabitLogResponseDTO> getLogsByHabitId(Long habitId) {
+        return habitLogRepository.findByHabitIdOrderByDateDesc(habitId)
+                .stream()
+                .map(habitLog -> new HabitLogResponseDTO(
+                        habitLog.getId(),
+                        habitLog.getDate(),
+                        habitLog.getHabit().getId()
+                ))
+                .toList();
+
+
 
     }
-    public long countLogsByHabitId(Long habitId){
+
+    public long countLogsByHabitId(Long habitId) {
         return habitLogRepository.countByHabitId(habitId);
     }
 
+    public HabitLogResponseDTO getHabitLogById(Long id) {
 
+        HabitLog habitLog = habitLogRepository.findById(id)
+                .orElseThrow(() ->
+                        new HabitNotFoundException("Registro no encontrado"));
 
-    public HabitLog saveHabitLogs(HabitLog habitLog){
+        return new HabitLogResponseDTO(
+                habitLog.getId(),
+                habitLog.getDate(),
+                habitLog.getHabit().getId()
+        );
+    }
 
-        if(habitLogRepository.existsByHabitIdAndDate(
-                habitLog.getHabit().getId(),
-                habitLog.getDate())){
+    public void deleteHabitLog(Long id) {
 
-            throw new HabitLogAlreadyExistsException("El hábito ya esta registrado para este día");
+        HabitLog habitLog = habitLogRepository.findById(id)
+                .orElseThrow(() ->
+                        new HabitNotFoundException("Registro no encontrado"));
 
-        }
+    }
 
+    public long getCurrentStreak(Long habitId) {
 
-        return habitLogRepository.save(habitLog);}
-
-    public HabitLog getHabitLogById(Long id){
-        return habitLogRepository.findById(id).orElse(null);    }
-
-    public void deleteHabitLog(Long id){habitLogRepository.deleteById(id);}
-
-    public long getCurrentStreak(Long habitId){
-
-        // Comprobamos primero que el hábito existe
         habitRepository.findById(habitId)
                 .orElseThrow(() ->
                         new HabitNotFoundException("Hábito no encontrado"));
 
-        List<HabitLog> logs= habitLogRepository.findByHabitIdOrderByDateDesc(habitId);
+        List<HabitLog> logs =
+                habitLogRepository.findByHabitIdOrderByDateDesc(habitId);
 
-
-
-        if(logs.isEmpty()){
-            return  0;
+        if (logs.isEmpty()) {
+            return 0;
         }
 
         LocalDate lastDate = logs.get(0).getDate();
@@ -77,25 +123,20 @@ public class HabitLogService {
             return 0;
         }
 
-        long streak =1;
+        long streak = 1;
 
         for (int i = 0; i < logs.size() - 1; i++) {
+
             if (logs.get(i).getDate().minusDays(1)
                     .equals(logs.get(i + 1).getDate())) {
 
                 streak++;
 
             } else {
-
                 break;
             }
-
         }
+
         return streak;
     }
-
-
-
-    }
-
-
+}
